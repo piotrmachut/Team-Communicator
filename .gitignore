@@ -348,3 +348,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+#   Django project configuration and other stuff
+db.sqlite3
+database_settings.py
+.vscode
