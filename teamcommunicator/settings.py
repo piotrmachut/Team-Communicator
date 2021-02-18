@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'engine',
 ]
 
 MIDDLEWARE = [
@@ -68,17 +69,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'teamcommunicator.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 
 # Password validation
@@ -118,3 +108,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+try:
+    from teamcommunicator.database_settings import DATABASES
+except ModuleNotFoundError:
+    print("Fix configuration in database_settings.py file!")
+    exit(0)
