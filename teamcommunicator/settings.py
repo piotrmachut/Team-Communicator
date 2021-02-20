@@ -113,8 +113,14 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
+
+# Dqatabase configuration i separate file
 try:
     from teamcommunicator.database_settings import DATABASES
 except ModuleNotFoundError:
     print("Fix configuration in database_settings.py file!")
     exit(0)
+
+
+# After Logout redirecting to main site
+LOGOUT_REDIRECT_URL = '/accounts/logged-out/'
