@@ -36,6 +36,7 @@
         <td style="background-color: #ffffff; height: 100%; padding: 10px;">
         <h1>{{ team.name }}'s channel</h1>
         <p>{{ team.description }}</p>
+        <hr>
         {% for record in messages_list %}
         {% if record.sender_id == request.user.id %}
         <div style="background-color: #6ea8fe; width: fit-content; padding: 5px; border-radius: 5px;">

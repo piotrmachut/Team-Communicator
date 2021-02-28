@@ -251,3 +251,47 @@ class TeamSettingsDelete(LoginRequiredMixin, View):
                 'team': team,
             }
             return render(request, 'team_settings_denied.html', context=ctx)
+
+
+class PrivateList(LoginRequiredMixin, View):
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request):
+        users_list = User.objects.all().order_by('first_name')
+        ctx = {
+            'users_list': users_list
+        }
+        return render(request, 'private_list.html', context=ctx)
+
+    def post(self, request):
+        recipient = request.POST.get('recipient')
+        if recipient == None:
+            return HttpResponseRedirect(f'/accounts/private/')
+        else:
+            return HttpResponseRedirect(f'/accounts/private/{recipient}/')
+
+
+class PrivateChannel(LoginRequiredMixin, View):
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request, id):
+        sender_id = request.user.id
+        receiver_id = id
+        receiver_object = User.objects.get(pk=id)
+        sides_of_conversation = [sender_id, receiver_id]
+        messages_list = PrivateMessage.objects.filter(receiver_id__in=sides_of_conversation).filter(sender_id__in=sides_of_conversation)
+        ctx = {
+            'messages_list': messages_list,
+            'receiver': receiver_object
+        }
+        return render(request, 'private_channel.html', context=ctx)
+    
+    def post(self, request, id):
+        sender = request.user.id
+        receiver = id
+        new_message = request.POST.get('message_field')
+        database_record = PrivateMessage(message=new_message, receiver_id=receiver, sender_id=sender)
+        database_record.save()
+        return HttpResponseRedirect(f'/accounts/private/{receiver}/')

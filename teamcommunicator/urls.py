@@ -32,4 +32,6 @@ urlpatterns = [
     path('accounts/team/settings/edit/<int:id>/', engine_views.TeamSettingsEdit.as_view(), name='team-edit'),
     path('accounts/team/settings/add-user/<int:id>/', engine_views.TeamSettingsAddUser.as_view(), name='team-add-user'),
     path('accounts/team/settings/delete/<int:id>/', engine_views.TeamSettingsDelete.as_view(), name='team-delete'),
+    path('accounts/private/', engine_views.PrivateList.as_view(), name='private-list'),
+    path('accounts/private/<int:id>/', engine_views.PrivateChannel.as_view(), name='private-channel'),
 ]
