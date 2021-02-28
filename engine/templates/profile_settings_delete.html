@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
-    <title>Main channel | Team-Communicator</title>
+    <title>Delete {{ team.name }}'s channel | Team-Communicator</title>
   </head>
   <body>
     
@@ -29,38 +29,22 @@
     <tr style="height: 100%;">
         <td style="width: 300px; padding: 10px; height: 100%; vertical-align: top;">
             <div class="d-grid gap-2">
-                <a href="{%  url 'profile' %}" class="btn btn-primary">Main channel</a>
-                {% for team in team_channels_list%}
-                <a href="/accounts/team/{{ team.id }}/" class="btn btn-primary">{{ team.name }}</a>
-                {% endfor %}
+                <a href="{% url 'profile-settings' %}" class="btn btn-primary">Go back to main profile settings</a>
               </div>
         </td>
         <td style="background-color: #ffffff; height: 100%; padding: 10px;">
-        {% for record in messages_list %}
-        {% if record.sender_id == request.user.id %}
-        <div style="background-color: #6ea8fe; width: fit-content; padding: 5px; border-radius: 5px;">
-        {% else %}
-        <div style="background-color: #cfe2ff; width: fit-content; padding: 5px; border-radius: 5px;">
-        {% endif %}
-            <b>{{ record.sender.first_name }} {{ record.sender.last_name }}</b> <i>{{ record.created }}</i><br>
-            {{ record.message }}<br>
-        </div>
-        <div style="height: 10px;"></div>
-        {% endfor %}
+          <h1>Delete {{ request.user.first_name }}'s profile</h1>
+          <p style="color: red; font-weight: bold;">Are you sure? This operation cannot be reversed.</p>
+          <p>Please confirm that you're aware of loosing all messages!</p>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Confirm and delete {{ request.user.first_name }}'s profile</button>
+              </form>
         </td>
     </tr>
     <tr>
         <td></td>
         <td style="padding: 10px;">
-            <form action="" method="POST">
-                {% csrf_token %}
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-default">{{ sender_name }}'s Message:</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="message_field">
-                    <input type="submit" value="Send" class="btn btn-primary">
-                  </div>
-                
-            </form>
         </td>
     </tr>
 </table>

@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
-    <title>Main channel | Team-Communicator</title>
+    <title>Create new team channel | Team-Communicator</title>
   </head>
   <body>
     
@@ -36,31 +36,26 @@
               </div>
         </td>
         <td style="background-color: #ffffff; height: 100%; padding: 10px;">
-        {% for record in messages_list %}
-        {% if record.sender_id == request.user.id %}
-        <div style="background-color: #6ea8fe; width: fit-content; padding: 5px; border-radius: 5px;">
-        {% else %}
-        <div style="background-color: #cfe2ff; width: fit-content; padding: 5px; border-radius: 5px;">
-        {% endif %}
-            <b>{{ record.sender.first_name }} {{ record.sender.last_name }}</b> <i>{{ record.created }}</i><br>
-            {{ record.message }}<br>
-        </div>
-        <div style="height: 10px;"></div>
-        {% endfor %}
+          <h1>Create new team channel</h1>
+          <p>Use form below to create new channel for your team</p>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Channel name</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="team_name" maxlength="64">
+                  <div id="emailHelp" class="form-text">Usually a name of your team.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputPassword1" class="form-label">Description</label>
+                  <input type="text" class="form-control" id="exampleInputPassword1" name="team_description" maxlength="256">
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+              </form>
         </td>
     </tr>
     <tr>
         <td></td>
         <td style="padding: 10px;">
-            <form action="" method="POST">
-                {% csrf_token %}
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-default">{{ sender_name }}'s Message:</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="message_field">
-                    <input type="submit" value="Send" class="btn btn-primary">
-                  </div>
-                
-            </form>
         </td>
     </tr>
 </table>
