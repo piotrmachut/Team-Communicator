@@ -142,9 +142,10 @@ class TeamAdd(LoginRequiredMixin, View):
         team_name = request.POST.get('team_name')
         team_description = request.POST.get('team_description')
         team_owner = request.user.id
+        database_user_record = User.objects.get(pk=team_owner)
         database_team_record = Team(name=team_name, description=team_description, owner_id=team_owner)
         database_team_record.save()
-        
+        database_team_record.users.add(database_user_record)
         return HttpResponseRedirect(f'/accounts/team/{database_team_record.id}/')
 
 
