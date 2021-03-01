@@ -1,0 +1,28 @@
+.logo-big {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100px;
+    height: 100px;
+  }
+
+.logo-small {
+    display: inline;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60px;
+    height: 70px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.top-bar {
+    width: 100%;
+    height: 70px;
+    background-color: #031633;
+}
+
+.top-bar-h1 {
+    color: white;
+}
