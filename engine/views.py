@@ -11,23 +11,27 @@ from django.db import models
 # Create your views here.
 
 class LoggedOut(View):
-
+    
     def get(self, request):
+        """Render view with confirmation of succesfull log out."""
         return render(request, 'successful_logout.html')
 
 
 class IndexView(View):
 
     def get(self, request):
+        """Render landing page of application."""
         return render(request, 'index.html')
 
 
 class SignUp(View):
 
     def get(self, request):
+        """Render sign up form."""
         return render(request, 'registration/signup.html')
     
     def post(self, request):
+        """Create new user in auth_user database table and render main page."""
         new_username = request.POST.get('username')
         new_first_name = request.POST.get('first_name')
         new_last_name = request.POST.get('last_name')
@@ -44,9 +48,12 @@ class SignUp(View):
 
 
 class Profile(LoginRequiredMixin, View):
+    """View available after successful user authorization."""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
+
     def get(self, request):
+        """Render site with main chat channell."""
         sender = request.user.id
         sender_name = request.user.first_name
         team_channels_list = Team.objects.all().order_by('id') # TODO All teams not teams related to user
@@ -59,6 +66,7 @@ class Profile(LoginRequiredMixin, View):
         return render(request, 'profile.html', context=ctx)
     
     def post(self, request):
+        """Save new message to MainChannelMessage table with the id of the authorized user. Redirect to view from GET method."""
         sender = request.user.id
         new_message = request.POST.get('message_field')
         database_record = MainChannelMessage(message=new_message, sender_id=sender)
@@ -67,13 +75,16 @@ class Profile(LoginRequiredMixin, View):
 
 
 class ProfileSettings(LoginRequiredMixin, View):
+    """View available after successful user authorization."""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(sefl, request):
+        """Render profile settings form of authorized user."""
         return render(request, 'profile_settings.html')
     
     def post(self, request):
+        """Update data of authorized user in auth_user database table. Redirect to view from GET method."""
         sender_first_name = request.POST.get('first_name')
         sender_last_name = request.POST.get('last_name')
         sender_email = request.POST.get('email')
@@ -90,23 +101,28 @@ class ProfileSettings(LoginRequiredMixin, View):
 
 
 class ProfileDelete(LoginRequiredMixin, View):
+    """View available after successful user authorization."""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request):
+        """Render view with user delete confirmation."""
         return render(request, 'profile_settings_delete.html')
     
     def post(self, request):
+        """Delete user and redirect to log in form."""
         database_record = User.objects.get(pk=request.user.id)
         database_record.delete()
         return HttpResponseRedirect(f'/accounts/login/')
 
 
 class TeamChannel(LoginRequiredMixin, View):
+    """View available after successful user authorization."""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request, id):
+        """Render view with team messages channel."""
         team = Team.objects.get(pk=id)
         sender = request.user.id
         sender_name = request.user.first_name
@@ -119,6 +135,7 @@ class TeamChannel(LoginRequiredMixin, View):
         return render(request, 'team_channel.html', context=ctx)
     
     def post(self, request, id):
+        """Save new message record to TeamMessage database table. Redirect to view form GET method."""
         sender = request.user.id
         new_message = request.POST.get('message_field')
         team_id = request.POST.get('team_id')
@@ -128,10 +145,12 @@ class TeamChannel(LoginRequiredMixin, View):
 
 
 class TeamAdd(LoginRequiredMixin, View):
+    """View is available after successful user authorization"""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request):
+        """Render view with new channel form."""
         team_channels_list = Team.objects.all().order_by('id') # TODO All teams not teams related to user
         ctx = {
             'team_channels_list': team_channels_list,
@@ -139,6 +158,7 @@ class TeamAdd(LoginRequiredMixin, View):
         return render(request, 'team_add.html', context=ctx)
     
     def post(self, request):
+        """Create new record in Team database table. Create relation between team creator and team members table."""
         team_name = request.POST.get('team_name')
         team_description = request.POST.get('team_description')
         team_owner = request.user.id
@@ -150,10 +170,16 @@ class TeamAdd(LoginRequiredMixin, View):
 
 
 class TeamSettings(LoginRequiredMixin, View):
+    """View available after successful user authorization."""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request, id):
+        """Render settings view for a team.
+
+        Keyword arguments:
+        id -- parameter passed with GET method from TeamChannel view. Id of a team.
+        """
         team = Team.objects.get(pk=id)
         ctx = {
             'team': team,
@@ -162,10 +188,18 @@ class TeamSettings(LoginRequiredMixin, View):
 
 
 class TeamSettingsEdit(LoginRequiredMixin, View):
+    """View available after successful user authorization"""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request, id):
+        """Check if authorized user is owner of a team.
+        If True: render form with team name and description.
+        If Flase: redner view with information about the lack of permissions.
+
+        Keyword arguments:
+        id -- parameter passed with GET method from TeamSettings view. Id of a team.
+        """
         team = Team.objects.get(pk=id)
         owner = team.owner_id
         sender = request.user.id
@@ -181,7 +215,14 @@ class TeamSettingsEdit(LoginRequiredMixin, View):
             return render(request, 'team_settings_denied.html', context=ctx)
             
     
-    def post(self, request, id): # TODO if do posta
+    def post(self, request, id):
+        """Check if authorized user is owner of a team.
+        If True: save new record with name and description to Team database table.
+        If False: redner view with information about the lack of permissions.
+
+        Keyword arguments:
+        id -- parameter passed with GET method from TeamSettings view. Id of a team.
+        """
         team = Team.objects.get(pk=id)
         owner = team.owner_id
         sender = request.user.id
@@ -198,18 +239,28 @@ class TeamSettingsEdit(LoginRequiredMixin, View):
 
 
 class TeamSettingsAddUser(LoginRequiredMixin, View):
+    """View available after successful user authorization."""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request, id):
+        """Check if authorized user is owner of a team.
+        If True: render view with new user - team relation form.
+        If False: redner view with information about the lack of permissions.
+
+        Keyword arguments:
+        id -- parameter passed with GET method from TeamSettings view. Id of a team.
+        """
         team = Team.objects.get(pk=id)
         owner = team.owner_id
         sender = request.user.id
         if owner == sender:
+            users_list = User.objects.all().order_by('first_name')
             ctx = {
                 'team': team,
+                'users_list': users_list,
             }
-            return HttpResponse('nowy użytkownik')
+            return render(request, 'team_settings_add_user.html', context=ctx)
         else:
             ctx = {
                 'team': team,
@@ -217,14 +268,32 @@ class TeamSettingsAddUser(LoginRequiredMixin, View):
             return render(request, 'team_settings_denied.html', context=ctx)
     
     def post(self, request, id):
-        pass
+        """Check if authorized user is owner of a team.
+        If True: save new record with new relation between auth_user table and Team table.
+        If False: redner view with information about the lack of permissions.
+
+        Keyword arguments:
+        id -- parameter passed with GET method from TeamSettings view. Id of a team.
+        """
+        team = Team.objects.get(pk=id)
+        new_user = request.POST.get('add-user')
+        team.users.add(new_user)
+        return HttpResponseRedirect(f'/accounts/team/settings/add-user/{id}/')
 
 
 class TeamSettingsDelete(LoginRequiredMixin, View):
+    """View available after successful user authorization."""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request, id):
+        """Check if authorized user is owner of a team.
+        If True: render view with team delate confirmation.
+        If False: redner view with information about the lack of permissions.
+
+        Keyword arguments:
+        id -- parameter passed with GET method from TeamSettings view. Id of a team.
+        """
         team = Team.objects.get(pk=id)
         owner = team.owner_id
         sender = request.user.id
@@ -240,6 +309,13 @@ class TeamSettingsDelete(LoginRequiredMixin, View):
             return render(request, 'team_settings_denied.html', context=ctx)
     
     def post(self, request, id):
+        """Check if authorized user is owner of a team.
+        If True: delete record from Team table.
+        If False: redner view with information about the lack of permissions.
+
+        Keyword arguments:
+        id -- parameter passed with GET method from TeamSettings view. Id of a team.
+        """
         team = Team.objects.get(pk=id)
         owner = team.owner_id
         sender = request.user.id
@@ -254,10 +330,12 @@ class TeamSettingsDelete(LoginRequiredMixin, View):
 
 
 class PrivateList(LoginRequiredMixin, View):
+    """View available after successful user authorization."""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request):
+        """Render view with form containg dropdown with list of users (authorised user excluded)."""
         users_list = User.objects.all().order_by('first_name')
         ctx = {
             'users_list': users_list
@@ -265,6 +343,7 @@ class PrivateList(LoginRequiredMixin, View):
         return render(request, 'private_list.html', context=ctx)
 
     def post(self, request):
+        """Redirect to PrivateChannel view for choosen recipient."""
         recipient = request.POST.get('recipient')
         if recipient == None:
             return HttpResponseRedirect(f'/accounts/private/')
@@ -273,10 +352,16 @@ class PrivateList(LoginRequiredMixin, View):
 
 
 class PrivateChannel(LoginRequiredMixin, View):
+    """View available after successful user authorization."""
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request, id):
+        """Render view with communication between authorised user and choosen recipient.
+        
+        Keyword arguments:
+        id -- parameter passed with GET method from PrivateList view. Id of a recipient.
+        """
         sender_id = request.user.id
         receiver_id = id
         receiver_object = User.objects.get(pk=id)
@@ -289,6 +374,11 @@ class PrivateChannel(LoginRequiredMixin, View):
         return render(request, 'private_channel.html', context=ctx)
     
     def post(self, request, id):
+        """Save new message record to PrivateMessage database table. Redirect to view from GET method.
+
+        Keyword arguments:
+        id -- parameter passed with GET method from PrivateList view. Id of a recipient.
+        """
         sender = request.user.id
         receiver = id
         new_message = request.POST.get('message_field')
