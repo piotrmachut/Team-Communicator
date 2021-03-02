@@ -56,7 +56,7 @@ class Profile(LoginRequiredMixin, View):
         """Render site with main chat channell."""
         sender = request.user.id
         sender_name = request.user.first_name
-        team_channels_list = Team.objects.all().order_by('id') # TODO All teams not teams related to user
+        team_channels_list = Team.objects.all().order_by('id')
         messages_list = MainChannelMessage.objects.all().select_related('sender').order_by('id')
         ctx = {
             'sender_name': sender_name,
@@ -122,17 +122,28 @@ class TeamChannel(LoginRequiredMixin, View):
     redirect_field_name = 'redirect_to'
 
     def get(self, request, id):
-        """Render view with team messages channel."""
+        """Render view with team messages channel.
+        Keyword arguments:
+
+        id -- parameter passed with GET method from Profile view. Id of a team.
+        """
         team = Team.objects.get(pk=id)
-        sender = request.user.id
-        sender_name = request.user.first_name
-        messages_list = TeamMessage.objects.select_related('sender').filter(team_id=id)
-        ctx = {
-            'team': team,
-            'sender_name': sender_name,
-            'messages_list': messages_list
-        }
-        return render(request, 'team_channel.html', context=ctx)
+        assigned_users_list = Team.objects.get(pk=id).users.all()
+        if request.user in assigned_users_list:
+            sender = request.user.id
+            sender_name = request.user.first_name
+            messages_list = TeamMessage.objects.select_related('sender').filter(team_id=id)
+            ctx = {
+                'team': team,
+                'sender_name': sender_name,
+                'messages_list': messages_list
+            }
+            return render(request, 'team_channel.html', context=ctx)
+        else:
+            ctx = {
+                'team': team
+            }
+            return render(request, 'team_denied.html', context=ctx)
     
     def post(self, request, id):
         """Save new message record to TeamMessage database table. Redirect to view form GET method."""
@@ -180,11 +191,18 @@ class TeamSettings(LoginRequiredMixin, View):
         Keyword arguments:
         id -- parameter passed with GET method from TeamChannel view. Id of a team.
         """
+        assigned_users_list = Team.objects.get(pk=id).users.all()
         team = Team.objects.get(pk=id)
-        ctx = {
-            'team': team,
-        }
-        return render(request, 'team_settings.html', context=ctx)
+        if request.user in assigned_users_list:
+            ctx = {
+                'team': team,
+            }
+            return render(request, 'team_settings.html', context=ctx)
+        else:
+            ctx = {
+                'team': team
+            }
+            return render(request, 'team_denied.html', context=ctx)
 
 
 class TeamSettingsEdit(LoginRequiredMixin, View):
@@ -255,10 +273,12 @@ class TeamSettingsAddUser(LoginRequiredMixin, View):
         owner = team.owner_id
         sender = request.user.id
         if owner == sender:
-            users_list = User.objects.all().order_by('first_name')
+            all_users_list = User.objects.all().order_by('first_name')
+            assigned_users_list = Team.objects.get(pk=id).users.all()
             ctx = {
                 'team': team,
-                'users_list': users_list,
+                'all_users_list': all_users_list,
+                'assigned_users_list': assigned_users_list,
             }
             return render(request, 'team_settings_add_user.html', context=ctx)
         else:
