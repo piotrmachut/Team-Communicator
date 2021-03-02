@@ -9,7 +9,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
-    <title>Delete {{ team.name }}'s channel | Team-Communicator</title>
+    <title>{{ team.name }} team channel | Team-Communicator</title>
   </head>
   <body>
     
@@ -32,17 +32,12 @@
     <tr style="height: 100%;">
         <td style="width: 300px; padding: 10px; height: 100%; vertical-align: top;">
             <div class="d-grid gap-2">
-              <a href="/accounts/team/settings/{{ team.id }}/" class="btn btn-primary">Go back to {{ team.name }} team main settings</a>
+                <a href="{% url 'profile' %}" class="btn btn-primary">Go back to Main channel</a>
               </div>
         </td>
         <td style="background-color: #ffffff; height: 100%; padding: 10px;">
-          <h1>Delete {{ team.name }}'s team channel</h1>
-          <p style="color: red; font-weight: bold;">Are you sure? This operation cannot be reversed.</p>
-          <p>Please confirm that you're aware of loosing all messages!</p>
-            <form action="" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Confirm and delete {{ team.name }}'s channel</button>
-              </form>
+          <h1 style="color: red">Access denied!</h1>
+          <p>Ask owner of {{ team.name }} team for access to this channel.</p>
         </td>
     </tr>
     <tr>

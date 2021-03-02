@@ -32,12 +32,12 @@
     <tr style="height: 100%;">
         <td style="width: 300px; padding: 10px; height: 100%; vertical-align: top;">
             <div class="d-grid gap-2">
-                <a href="/accounts/team/settings/{{ team.id }}/" class="btn btn-warning">{{ team.name }}'s channel settings</a>
+                <a href="/accounts/team/settings/{{ team.id }}/" class="btn btn-warning">{{ team.name }} team channel settings</a>
                 <a href="{%  url 'profile' %}" class="btn btn-primary">Go back</a>
               </div>
         </td>
         <td style="background-color: #ffffff; height: 100%; padding: 10px;">
-        <h1>{{ team.name }}'s channel</h1>
+        <h1>{{ team.name }} team channel</h1>
         <p>{{ team.description }}</p>
         <hr>
         {% for record in messages_list %}

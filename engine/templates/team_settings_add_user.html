@@ -32,32 +32,42 @@
     <tr style="height: 100%;">
         <td style="width: 300px; padding: 10px; height: 100%; vertical-align: top;">
             <div class="d-grid gap-2">
-                <a href="/accounts/team/settings/{{ team.id }}/" class="btn btn-primary">Go back to {{ team.name }} team channel</a>
+                <a href="/accounts/team/settings/{{ team.id }}/" class="btn btn-primary">Go back to {{ team.name }} team main settings</a>
               </div>
         </td>
         <td style="background-color: #ffffff; height: 100%; padding: 10px;">
           <h1>Add new user to {{ team.name }} team</h1>
-          <p>Use form below to add new user to {{ team.name }} team.<br>
-            Adding users who are already in the team is disabled</p>
+          <p>Use form below to add new user to {{ team.name }} team.</p>
+            <hr>
+            <h5>{{ team.name }} team members:</h5>
+            <ol>
+              {% for member in assigned_users_list %}
+              <li>{{ member.first_name }} {{ member.last_name }}</li>
+              {% endfor %}
+            </ol>
+            <hr>
+            <h5>Possible new members:</h5>
             <form action="" method="POST">
                 {% csrf_token %}
-                {% for user in users_list %}
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="add-user" id="exampleRadios1" value="{{ user.id }}" checked>
-                    <label class="form-check-label" for="exampleRadios1">
-                      {{ user.first_name }} {{ user.last_name }}
-                    </label>
-                  </div>
-                  {% endfor %}
-                  </div>
-                  <div class="form-check disabled">
-                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3" disabled>
-                    <label class="form-check-label" for="exampleRadios3">
-                      Disabled radio
-                    </label>
-                  </div>
+                {% for user in all_users_list %}
+                    {% if user in assigned_users_list %}
+                    <div class="form-check disabled">
+                      <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3" disabled>
+                      <label class="form-check-label" for="exampleRadios3">
+                        {{ user.first_name }} {{ user.last_name }}
+                      </label>
+                    </div>
+                    {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="add-user" id="exampleRadios1" value="{{ user.id }}" checked>
+                      <label class="form-check-label" for="exampleRadios1">
+                        {{ user.first_name }} {{ user.last_name }}
+                      </label>
+                    </div>
+                    {% endif %}
+                {% endfor %}
                   <br>
-                <button type="submit" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-primary">Add to {{ team.name }} team</button>
               </form>
         </td>
     </tr>
