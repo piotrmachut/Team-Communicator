@@ -11,23 +11,26 @@ from django.db import models
 # Create your views here.
 
 class LoggedOut(View):
-    
+    """Confirmation of successful log out."""
+
     def get(self, request):
-        """Render view with confirmation of succesfull log out."""
+        """Render log out confirmation template."""
         return render(request, 'successful_logout.html')
 
 
 class IndexView(View):
+    """Landing page."""
 
     def get(self, request):
-        """Render landing page of application."""
+        """Render langing page template"""
         return render(request, 'index.html')
 
 
 class SignUp(View):
+    "Sign up form"
 
     def get(self, request):
-        """Render sign up form."""
+        """Render template with sign up form"""
         return render(request, 'registration/signup.html')
     
     def post(self, request):
@@ -48,7 +51,9 @@ class SignUp(View):
 
 
 class Profile(LoginRequiredMixin, View):
-    """View available after successful user authorization."""
+    """Main channel page."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
@@ -75,7 +80,9 @@ class Profile(LoginRequiredMixin, View):
 
 
 class ProfileSettings(LoginRequiredMixin, View):
-    """View available after successful user authorization."""
+    """Authenticated user settings."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
@@ -101,7 +108,9 @@ class ProfileSettings(LoginRequiredMixin, View):
 
 
 class ProfileDelete(LoginRequiredMixin, View):
-    """View available after successful user authorization."""
+    """Confirmation of deleting authenticated user."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
@@ -117,7 +126,9 @@ class ProfileDelete(LoginRequiredMixin, View):
 
 
 class TeamChannel(LoginRequiredMixin, View):
-    """View available after successful user authorization."""
+    """Channel page of the selected team."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
@@ -156,13 +167,15 @@ class TeamChannel(LoginRequiredMixin, View):
 
 
 class TeamAdd(LoginRequiredMixin, View):
-    """View is available after successful user authorization"""
+    """Add new team."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request):
         """Render view with new channel form."""
-        team_channels_list = Team.objects.all().order_by('id') # TODO All teams not teams related to user
+        team_channels_list = Team.objects.all().order_by('id')
         ctx = {
             'team_channels_list': team_channels_list,
         }
@@ -181,7 +194,9 @@ class TeamAdd(LoginRequiredMixin, View):
 
 
 class TeamSettings(LoginRequiredMixin, View):
-    """View available after successful user authorization."""
+    """List of available team settings."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
@@ -206,7 +221,9 @@ class TeamSettings(LoginRequiredMixin, View):
 
 
 class TeamSettingsEdit(LoginRequiredMixin, View):
-    """View available after successful user authorization"""
+    """Edit team name and description."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
@@ -232,7 +249,6 @@ class TeamSettingsEdit(LoginRequiredMixin, View):
             }
             return render(request, 'team_settings_denied.html', context=ctx)
             
-    
     def post(self, request, id):
         """Check if authorized user is owner of a team.
         If True: save new record with name and description to Team database table.
@@ -257,7 +273,9 @@ class TeamSettingsEdit(LoginRequiredMixin, View):
 
 
 class TeamSettingsAddUser(LoginRequiredMixin, View):
-    """View available after successful user authorization."""
+    """Assign new user to your team."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
@@ -302,13 +320,15 @@ class TeamSettingsAddUser(LoginRequiredMixin, View):
 
 
 class TeamSettingsDelete(LoginRequiredMixin, View):
-    """View available after successful user authorization."""
+    """Confirm and delete the selected team."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
     def get(self, request, id):
         """Check if authorized user is owner of a team.
-        If True: render view with team delate confirmation.
+        If True: render view with team delete confirmation.
         If False: redner view with information about the lack of permissions.
 
         Keyword arguments:
@@ -350,7 +370,9 @@ class TeamSettingsDelete(LoginRequiredMixin, View):
 
 
 class PrivateList(LoginRequiredMixin, View):
-    """View available after successful user authorization."""
+    """List of available recipients of private messages."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
@@ -372,7 +394,9 @@ class PrivateList(LoginRequiredMixin, View):
 
 
 class PrivateChannel(LoginRequiredMixin, View):
-    """View available after successful user authorization."""
+    """Private message channel between authenticated and selected user."""
+
+    # View available after successful user authentication.
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
 
