@@ -1,4 +1,4 @@
-"""Tests are located in 'tests' subfolder.""
+"""Tests are located in 'tests' subfolder."""
 
 from django.test import TestCase
 
